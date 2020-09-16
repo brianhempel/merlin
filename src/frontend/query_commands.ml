@@ -144,6 +144,24 @@ let dump pipeline = function
     in
     `List (List.map ~f:aux sg)
 
+  | [`String "typedtree"] ->
+    let typer = Mpipeline.typer_result pipeline in
+    let binary_annots =
+      (match Mtyper.get_typedtree typer with
+      | `Implementation structure -> Cmt_format.Implementation structure
+      | `Interface signature      -> Cmt_format.Interface signature
+      )
+    in
+    let cmt_path = (Mpipeline.input_config pipeline).query.filename ^ ".merlin.cmt" in
+    Cmt_format.save_cmt
+      cmt_path
+      "What_i_have_to_choose_a_module_name"
+      binary_annots
+      None (* source file *)
+      (Mtyper.get_env typer)
+      None;
+    `String cmt_path
+
   | [`String "browse"] ->
     let typer = Mpipeline.typer_result pipeline in
     let structure = Mbrowse.of_typedtree (Mtyper.get_typedtree typer) in
@@ -179,7 +197,7 @@ let dump pipeline = function
 
   | _ -> failwith "known dump commands: \
                    paths, exn, warnings, flags, tokens, browse, source, \
-                   parsetree, ppxed-source, ppxed-parsetree, \
+                   parsetree, ppxed-source, ppxed-parsetree, typedtree, \
                    env/fullenv (at {col:, line:})"
 
 let reconstruct_identifier pipeline pos = function

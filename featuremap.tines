@@ -181,6 +181,7 @@
 	<node type="todo" done="no"><data>Dump</data>
 		<node><data>parsetree</data></node>
 		<node><data>printast</data></node>
+		<node><data>typedtree</data></node>
 		<node><data>env / fullenv</data></node>
 		<node><data>browse</data></node>
 		<node><data>tokens</data></node>
